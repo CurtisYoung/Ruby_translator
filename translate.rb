@@ -1,10 +1,10 @@
 require 'rest-client'
 require 'json'
 
-class App
+class Translate
 	def initialize
 		@url = 'https://translate.yandex.net/api/v1.5/tr.json/translate'
-		@key = 'trnsl.1.1.20200309T234500Z.09dbaf2fcf6c9912.42736ca9bf3b48aa99f7f7f55b077645e4175bcd'
+		@key = 'put your app key here'
 		puts 'Digite o texto que deseja traduzir'
 		@text = gets
         puts 'Informe o idioma do texto '
@@ -18,7 +18,7 @@ class App
 		generate_file
 
 	end
-
+	#method for get the response
 	def get_response
 		response = RestClient.get(@url,
 			params: {
@@ -29,17 +29,26 @@ class App
 		)
 		return response
 	end
-
+	#method receive response and convert text
 	def get_translation
-		JSON.parse(@response)
-	end
+		JSON.parse(@response)["text"]
 
-    def generate_file
-        date_name = Time.new.strftime('%d-%m-%y   %H:%M') + '.txt'
-		file = File.open(date_name, 'w') do |f|
-			f.puts get_translation
+	end
+	#method use another method get_translation and use text response and langeuage for save in file
+	def generate_file
+		puts "Realizando Tradução... / Loading Translate"
+		puts get_translation
+		time = Time.new
+
+        
+		file = File.open(time.strftime("%m-%d-%Y.%H.%M.%S") + ".txt", 'w') do |fline|
+			fline.puts @lang
+			fline.puts ("#############################")
+			fline.puts get_translation
+			fline.puts ("#############################")
+
 		end
 	end
 end
 
-app = App.new
+app = Translate.new
